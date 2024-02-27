@@ -14,6 +14,7 @@ import {
   InputNumber,
   Checkbox,
 } from 'antd';
+import TextArea from 'antd/es/input/TextArea';
 
 function AddFood({ open, record, onCancel }) {
   const [form] = Form.useForm();
@@ -86,7 +87,7 @@ function AddFood({ open, record, onCancel }) {
             <Form.Item
               label="Category"
               name="categoryId"
-              rules={[{ required: true, message: 'Please select category' }]}
+              rules={[{ required: false, message: 'Please select category' }]}
             >
               <Select
                 placeholder="Select category"
@@ -139,6 +140,11 @@ function AddFood({ open, record, onCancel }) {
           <Col xs={24}>
             <Form.Item label="Buy new" name="isEmpty" valuePropName="checked">
               <Checkbox style={{ width: '100%' }} />
+            </Form.Item>
+          </Col>
+          <Col xs={24}>
+            <Form.Item label="Additional Notes" name="notes">
+              <TextArea />
             </Form.Item>
           </Col>
         </Row>
