@@ -32,9 +32,8 @@ import AddFood from './AddFood';
 import groupBy from 'lodash.groupby';
 
 const headerStyle = {
-  margin: '0px 10px',
-  padding: 0,
-  backgroundColor: '#f5f5f5',
+  padding: '0px 10px',
+  backgroundColor: 'white' || '#f5f5f5',
   position: 'sticky',
   top: 63,
   zIndex: 1,
@@ -74,9 +73,10 @@ function FoodList() {
 
   const handlePurchased = async () => {
     try {
-      const res = await axios.put(API_URL + `/foodItems/bulkPurchased`);
+      const res = await axios.post(API_URL + `/foodItems/bulkPurchased`, {});
       message.success(res.data.message);
       fetchFoodItems();
+      setIsShoppingList(!isShoppingList);
     } catch (e) {}
   };
 
@@ -215,7 +215,7 @@ function FoodList() {
               fontWeight: 'bold',
             }}
           >
-            Food Items{' '}
+            {isShoppingList ? 'Grocery List' : 'Food Items'}{' '}
             <Badge
               count={totalCount}
               style={{
@@ -224,7 +224,7 @@ function FoodList() {
             />
           </div>
           <div>
-            {isShoppingList ? (
+            {isShoppingList && totalCount > 0 ? (
               <Popconfirm
                 title="Purchased Food Items"
                 description="Are you sure, all items are purchased ?"
