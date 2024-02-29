@@ -14,6 +14,8 @@ import {
   message,
   Collapse,
   Badge,
+  Checkbox,
+  Popconfirm,
 } from 'antd';
 import {
   EditOutlined,
@@ -22,6 +24,9 @@ import {
   EnvironmentOutlined,
   ShoppingCartOutlined,
   CheckOutlined,
+  AlertOutlined,
+  CloseOutlined,
+  UnorderedListOutlined,
 } from '@ant-design/icons';
 import AddFood from './AddFood';
 import groupBy from 'lodash.groupby';
@@ -36,7 +41,7 @@ const headerStyle = {
 };
 const iconStyle = {
   fontSize: 18,
-  marginLeft: 10,
+  // marginLeft: 10,
 };
 const { Panel } = Collapse;
 function FoodList() {
@@ -61,7 +66,15 @@ function FoodList() {
 
   const deleteFoodItem = async (id) => {
     try {
-      const res = await axios.delete(API_URL + `/api/foodItems/${id}`);
+      const res = await axios.delete(API_URL + `/foodItems/${id}`);
+      message.success(res.data.message);
+      fetchFoodItems();
+    } catch (e) {}
+  };
+
+  const handlePurchased = async () => {
+    try {
+      const res = await axios.put(API_URL + `/foodItems/bulkPurchased`);
       message.success(res.data.message);
       fetchFoodItems();
     } catch (e) {}
@@ -72,20 +85,73 @@ function FoodList() {
 
   const ItemList = ({ dataSource = foodItems }) => (
     <List
-      style={{ margin: '5px 10px' }}
-      grid={{
-        gutter: 12,
-        xs: 1,
-        sm: 2,
-        md: 4,
-        lg: 4,
-        xl: 6,
-        xxl: 3,
-      }}
+      className="demo-loadmore-list"
+      itemLayout="horizontal"
+      style={{ margin: '5px 0px' }}
+      size="small"
+      // grid={{
+      //   gutter: 12,
+      //   xs: 1,
+      //   sm: 2,
+      //   md: 4,
+      //   lg: 4,
+      //   xl: 6,
+      //   xxl: 3,
+      // }}
       dataSource={dataSource}
       renderItem={(item) => (
-        <List.Item>
-          <Card
+        <List.Item
+          actions={[
+            <EditOutlined
+              style={iconStyle}
+              size="large"
+              title="Delete"
+              onClick={() => {
+                setRecord(item);
+                setIsAddModal(true);
+              }}
+            />,
+            <DeleteOutlined
+              style={iconStyle}
+              title="Delete"
+              onClick={() => deleteFoodItem(item._id)}
+            />,
+          ]}
+        >
+          <List.Item.Meta
+            title={
+              <>
+                {item.name}
+                {item.isEmpty ? (
+                  <Tag color="warning" style={{ marginLeft: 10 }}>
+                    <AlertOutlined /> Buy
+                  </Tag>
+                ) : null}
+              </>
+            }
+            description={
+              <Row gutter={16}>
+                {item.notes && <Col>{item.notes} </Col>}
+                {item.locationId?.name && item.locationId.name !== 'Other' && (
+                  <Col>
+                    <EnvironmentOutlined style={{ color: 'red' }} />{' '}
+                    {item.locationId.name}
+                  </Col>
+                )}
+                {item.categoryId?.name && item.categoryId.name !== 'Other' && (
+                  <Col>
+                    <Tag bordered={false} color="processing">
+                      {item.categoryId?.name}
+                    </Tag>
+                  </Col>
+                )}
+              </Row>
+            }
+          />
+          <div>
+            <b>{item.quantity || '0'} </b>Reg.
+          </div>
+          {/* <Card
             type="inner"
             size="small"
             title={
@@ -133,7 +199,7 @@ function FoodList() {
                 </Col>
               )}
             </Row>
-          </Card>
+          </Card> */}
         </List.Item>
       )}
     />
@@ -158,22 +224,26 @@ function FoodList() {
             />
           </div>
           <div>
-            <Select
-              style={{ marginRight: 10 }}
-              value={groupKey}
-              onChange={(val) => setGroupKey(val)}
-              allowClear
-              placeholder="GroupBy"
-              options={[
-                { label: 'Category', value: 'categoryId' },
-                { label: 'Location', value: 'locationId' },
-              ]}
-            ></Select>
+            {isShoppingList ? (
+              <Popconfirm
+                title="Purchased Food Items"
+                description="Are you sure, all items are purchased ?"
+                onConfirm={handlePurchased}
+                // onCancel={cancel}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button
+                  style={{ marginRight: 10 }}
+                  icon={<CheckOutlined style={{ color: 'green' }} />}
+                ></Button>
+              </Popconfirm>
+            ) : null}
             <Button
               style={{ marginRight: 10 }}
               icon={
                 isShoppingList ? (
-                  <CheckOutlined style={{ color: 'green' }} />
+                  <UnorderedListOutlined />
                 ) : (
                   <ShoppingCartOutlined />
                 )
@@ -185,6 +255,17 @@ function FoodList() {
                 setIsShoppingList(!isShoppingList);
               }}
             ></Button>
+            <Select
+              style={{ marginRight: 10 }}
+              value={groupKey}
+              onChange={(val) => setGroupKey(val)}
+              allowClear
+              placeholder="GroupBy"
+              options={[
+                { label: 'Category', value: 'categoryId' },
+                { label: 'Location', value: 'locationId' },
+              ]}
+            ></Select>
             <Button
               size="large"
               icon={<PlusOutlined />}
