@@ -25,7 +25,7 @@ import {
   ShoppingCartOutlined,
   CheckOutlined,
   AlertOutlined,
-  CloseOutlined,
+  ShopOutlined,
   UnorderedListOutlined,
 } from '@ant-design/icons';
 import AddFood from './AddFood';
@@ -80,14 +80,12 @@ function FoodList() {
     } catch (e) {}
   };
 
-  const groupedFoods = groupKey ? groupBy(foodItems, `${groupKey}.name`) : [];
+  const groupedFoods = groupKey ? groupBy(foodItems, groupKey) : [];
   const totalCount = foodItems?.length;
 
   const ItemList = ({ dataSource = foodItems }) => (
     <List
-      className="demo-loadmore-list"
       itemLayout="horizontal"
-      style={{ margin: '5px 0px' }}
       size="small"
       // grid={{
       //   gutter: 12,
@@ -121,16 +119,21 @@ function FoodList() {
           <List.Item.Meta
             title={
               <>
-                {item.name}
+                <span style={{ marginRight: 5 }}>{item.name}</span>
+                {item.storeId ? (
+                  <Tag color="success">
+                    <ShopOutlined /> {item.storeId}
+                  </Tag>
+                ) : null}
                 {item.isEmpty ? (
-                  <Tag color="warning" style={{ marginLeft: 10 }}>
+                  <Tag color="warning">
                     <AlertOutlined /> Buy
                   </Tag>
                 ) : null}
               </>
             }
             description={
-              <Row gutter={16}>
+              <Row gutter={8}>
                 {item.notes && <Col>{item.notes} </Col>}
                 {item.locationId?.name && item.locationId.name !== 'Other' && (
                   <Col>
@@ -262,8 +265,15 @@ function FoodList() {
               allowClear
               placeholder="GroupBy"
               options={[
-                { label: 'Category', value: 'categoryId' },
-                { label: 'Location', value: 'locationId' },
+                { label: 'Store', value: 'storeId' },
+                {
+                  label: 'Category',
+                  value: 'categoryId.name',
+                },
+                {
+                  label: 'Location',
+                  value: 'locationId.name',
+                },
               ]}
             ></Select>
             <Button
@@ -278,7 +288,7 @@ function FoodList() {
       </Layout.Header>
       <Layout.Content>
         {groupKey ? (
-          <Collapse accordion>
+          <Collapse accordion size="small">
             {Object.keys(groupedFoods).map((item) => (
               <Panel
                 header={item === 'undefined' ? 'Uncategorized' : item}
