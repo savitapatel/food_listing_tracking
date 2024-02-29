@@ -24,7 +24,7 @@ function AddFood({ open, record, onCancel }) {
 
   const fetchCat = async () => {
     try {
-      let res = await axios.get(API_URL + '/api/foodCategories');
+      let res = await axios.get(API_URL + '/foodCategories');
       setCategory(res.data.data);
       if (record) form.setFieldValue('categoryId', record.categoryId?._id);
     } catch (e) {
@@ -33,7 +33,7 @@ function AddFood({ open, record, onCancel }) {
   };
   const fetchLoc = async () => {
     try {
-      let res = await axios.get(API_URL + '/api/foodLocations');
+      let res = await axios.get(API_URL + '/foodLocations');
       setLocations(res.data.data);
       if (record) form.setFieldValue('locationId', record.locationId?._id);
     } catch (e) {
@@ -48,8 +48,8 @@ function AddFood({ open, record, onCancel }) {
       if (!values.categoryId)
         values.categoryId = category.find((x) => x.name === 'Other')?._id;
       const callApi = record
-        ? axios.put(API_URL + '/api/foodItems/' + record._id, values)
-        : axios.post(API_URL + '/api/foodItems', values);
+        ? axios.put(API_URL + '/foodItems/' + record._id, values)
+        : axios.post(API_URL + '/foodItems', values);
       let res = await callApi;
       message.success(res.data.message);
       onCancel(res);

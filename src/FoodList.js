@@ -53,7 +53,7 @@ function FoodList() {
 
   const fetchFoodItems = async () => {
     try {
-      const res = await axios.get(API_URL + '/api/foodItems');
+      const res = await axios.get(API_URL + '/foodItems');
       setFoodItems(res.data.data);
       foodItemRef.current = res.data.data;
     } catch (e) {}
