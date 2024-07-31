@@ -1,9 +1,21 @@
 import { Header } from 'antd/es/layout/layout';
 import './App.css';
 import FoodList from './FoodList';
+import Receipes from './Receipes';
 import { Layout } from 'antd';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 function App() {
+  const router = createBrowserRouter([
+    {
+      path: '/',
+      element: <Receipes />,
+    },
+    {
+      path: '/foods',
+      element: <FoodList />,
+    },
+  ]);
   return (
     <Layout>
       <Header
@@ -16,9 +28,10 @@ function App() {
           color: 'white',
         }}
       >
-        Let's manage your Food Items...
+        Let's manage your <a href="/foods"> Food Items</a> &{' '}
+        <a href="/"> Receipes</a> :)
       </Header>
-      <FoodList />
+      <RouterProvider router={router}></RouterProvider>
     </Layout>
   );
 }
