@@ -8,11 +8,11 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 function App() {
   const router = createBrowserRouter([
     {
-      path: '/',
+      path: '/food_listing_tracking/',
       element: <Receipes />,
     },
     {
-      path: '/foods',
+      path: '/food_listing_tracking/foods',
       element: <FoodList />,
     },
   ]);
@@ -28,8 +28,9 @@ function App() {
           color: 'white',
         }}
       >
-        Let's manage your <a href="/foods"> Food Items</a> &{' '}
-        <a href="/"> Receipes</a> :)
+        Let's manage your{' '}
+        <a href={process.env.PUBLIC_URL + '/foods'}> Food Items</a> &{' '}
+        <a href={process.env.PUBLIC_URL + '/'}> Receipes</a> :)
       </Header>
       <RouterProvider router={router}></RouterProvider>
     </Layout>
