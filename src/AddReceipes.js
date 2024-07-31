@@ -89,9 +89,7 @@ function AddReceipes({ open, record, onCancel }) {
           file.name.replace(/\.[^/.]+$/, '.jpg'),
           { type: 'image/jpeg' }
         );
-        const url = URL.createObjectURL(convertedBlob);
-        console.log(url, 67);
-        return url;
+        return convertedFile;
       } catch (error) {
         console.log('Error converting HEIC to JPEG');
         message.error('Error converting HEIC to JPEG');
