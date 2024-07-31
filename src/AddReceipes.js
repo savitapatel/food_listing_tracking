@@ -61,6 +61,7 @@ function AddReceipes({ open, record, onCancel }) {
       const response = await axios.post(API_URL + '/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          'Access-Control-Allow-Origin': '*',
         },
       });
 
