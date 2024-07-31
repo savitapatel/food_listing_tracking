@@ -77,7 +77,7 @@ function AddReceipes({ open, record, onCancel }) {
     }
   };
   const handleBeforeUpload = async (file) => {
-    if (file.type === 'image/heic') {
+    if (file.type === 'image/heic' || file.type === 'image/HEIC') {
       try {
         setFileLoading(true);
         const convertedBlob = await heic2any({
@@ -89,8 +89,11 @@ function AddReceipes({ open, record, onCancel }) {
           file.name.replace(/\.[^/.]+$/, '.jpg'),
           { type: 'image/jpeg' }
         );
-        return convertedFile;
+        const url = URL.createObjectURL(convertedBlob);
+        console.log(url, 67);
+        return url;
       } catch (error) {
+        console.log('Error converting HEIC to JPEG');
         message.error('Error converting HEIC to JPEG');
         return false;
       } finally {

@@ -106,13 +106,15 @@ function Receipes() {
                       style={{ marginLeft: '10px' }}
                     />
                   </div>
-                  <div>
-                    <img
-                      style={{ width: 70, height: 70 }}
-                      src={API_URL + item.image}
-                      alt="food"
-                    />
-                  </div>
+                  {item.image ? (
+                    <div>
+                      <img
+                        style={{ width: 70, height: 70 }}
+                        src={API_URL + item.image}
+                        alt="food"
+                      />
+                    </div>
+                  ) : null}
                 </div>
               }
               key={item?._id}
@@ -134,14 +136,26 @@ function Receipes() {
                           ))}
                         </Col>
                       </Row>
-                      <Row>
-                        <Col span={6}>
-                          <h4>Instructions</h4>
-                        </Col>
-                        <Col span={18} style={{ whiteSpace: 'pre' }}>
-                          {item.instructions || '-'}
-                        </Col>
-                      </Row>
+
+                      {item.instructions ? (
+                        <>
+                          <hr></hr>
+                          <Row>
+                            <Col span={6}>
+                              <h4>Instructions</h4>
+                            </Col>
+                            <Col
+                              span={18}
+                              style={{
+                                wordWrap: 'break-word',
+                                whiteSpace: 'pre-wrap',
+                              }}
+                            >
+                              {item.instructions || '-'}
+                            </Col>
+                          </Row>
+                        </>
+                      ) : null}
                     </>
                   }
                 />
