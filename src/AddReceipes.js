@@ -30,7 +30,12 @@ function AddReceipes({ open, record, onCancel }) {
         ?.split(',')
         .map((item) => item.trim());
 
-      const req = { ...values, ingredientsList, image: imageUrl };
+      const req = {
+        ...values,
+        ingredientsList,
+        image: imageUrl,
+        mealTime: values.mealTime || 'any',
+      };
       const callApi = record
         ? axios.put(API_URL + '/receipes/' + record._id, req)
         : axios.post(API_URL + '/receipes', req);

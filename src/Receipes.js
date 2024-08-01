@@ -14,9 +14,12 @@ import {
   Badge,
   Image,
   Popconfirm,
+  Input,
 } from 'antd';
 import { DeleteOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
 import AddReceipes from './AddReceipes';
+
+const { Search } = Input;
 
 const headerStyle = {
   padding: '0px 10px',
@@ -32,10 +35,28 @@ function Receipes() {
   const [record, setRecord] = useState(null);
   const [recipes, setRecipes] = useState([]);
   const [loader, setLoader] = useState(false);
+  const [filteredData, setFilteredData] = useState([]);
+
+  const handleSearch = (value) => {
+    const filtered = recipes.filter((item) => {
+      const ingred =
+        item.ingredients?.length > 0 ? item.ingredients?.join(',') : '';
+      return (
+        item.name.toLowerCase().includes(value.toLowerCase()) ||
+        item.mealTime?.toLowerCase().includes(value.toLowerCase()) ||
+        ingred.toLowerCase().includes(value.toLowerCase())
+      );
+    });
+    setFilteredData(filtered);
+  };
 
   useEffect(() => {
     fetchFoodItems();
   }, []);
+
+  useEffect(() => {
+    setFilteredData(recipes);
+  }, [recipes]);
 
   const fetchFoodItems = async () => {
     try {
@@ -77,6 +98,12 @@ function Receipes() {
               }}
             />
           </div>
+
+          <Search
+            placeholder="Search by Name or Ingredients"
+            onSearch={handleSearch}
+            style={{ display: 'flex', alignItems: 'center', width: '50%' }}
+          />
           <div>
             <Button
               size="large"
@@ -93,7 +120,7 @@ function Receipes() {
           <p>Loading...</p>
         ) : (
           <Collapse accordion size="small">
-            {recipes.map((item) => (
+            {filteredData.map((item) => (
               <Panel
                 header={
                   <div
@@ -101,7 +128,7 @@ function Receipes() {
                   >
                     <div>
                       <b> {item?.name} </b>
-                      <Tag color="success">{item.mealTime || 'any'}</Tag>
+                      <Tag color="success">{item.mealTime}</Tag>
                       <EditOutlined
                         title="Edit"
                         onClick={(e) => {
