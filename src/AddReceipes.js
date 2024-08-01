@@ -83,6 +83,7 @@ function AddReceipes({ open, record, onCancel }) {
         const convertedBlob = await heic2any({
           blob: file,
           toType: 'image/jpeg',
+          quality: 0.5,
         });
         const convertedFile = new File(
           [convertedBlob],

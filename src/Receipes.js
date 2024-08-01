@@ -13,6 +13,7 @@ import {
   Collapse,
   Badge,
   Image,
+  Popconfirm,
 } from 'antd';
 import { DeleteOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
 import AddReceipes from './AddReceipes';
@@ -103,27 +104,40 @@ function Receipes() {
                       <Tag color="success">{item.mealTime || 'any'}</Tag>
                       <EditOutlined
                         title="Edit"
-                        onClick={() => {
+                        onClick={(e) => {
                           setRecord(item);
                           setIsAddModal(true);
+                          e.stopPropagation();
                         }}
                       />
 
-                      <DeleteOutlined
-                        title="Delete"
-                        onClick={() => deleteFoodItem(item._id)}
-                        style={{ marginLeft: '10px' }}
-                      />
+                      <Popconfirm
+                        title="Delete Receipe"
+                        description="Are you sure, you want to delete this receipe ?"
+                        onConfirm={(e) => {
+                          deleteFoodItem(item._id);
+                          e.stopPropagation();
+                        }}
+                        onCancel={(e) => e.stopPropagation()}
+                        okText="Yes"
+                        cancelText="No"
+                      >
+                        <DeleteOutlined
+                          title="Delete"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                          }}
+                          style={{ marginLeft: '10px' }}
+                        />
+                      </Popconfirm>
                     </div>
                     {item.image ? (
-                      <div>
-                        <Image
-                          style={{ width: 50, height: 50 }}
-                          src={API_URL + item.image}
-                          alt="food"
-                          loading="lazy"
-                        />
-                      </div>
+                      <Image
+                        style={{ width: 50, height: 50 }}
+                        src={API_URL + item.image}
+                        alt="food"
+                        loading="lazy"
+                      />
                     ) : null}
                   </div>
                 }
