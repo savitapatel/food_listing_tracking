@@ -12,6 +12,7 @@ import {
   message,
   Collapse,
   Badge,
+  Image,
 } from 'antd';
 import { DeleteOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
 import AddReceipes from './AddReceipes';
@@ -29,6 +30,7 @@ function Receipes() {
   const [isAddModal, setIsAddModal] = useState(false);
   const [record, setRecord] = useState(null);
   const [recipes, setRecipes] = useState([]);
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
     fetchFoodItems();
@@ -36,9 +38,13 @@ function Receipes() {
 
   const fetchFoodItems = async () => {
     try {
+      setLoader(true);
       const res = await axios.get(API_URL + '/receipes');
       setRecipes(res.data.data);
-    } catch (e) {}
+    } catch (e) {
+    } finally {
+      setLoader(false);
+    }
   };
 
   const deleteFoodItem = async (id) => {
@@ -82,87 +88,92 @@ function Receipes() {
         </div>
       </Layout.Header>
       <Layout.Content>
-        <Collapse accordion size="small">
-          {recipes.map((item) => (
-            <Panel
-              header={
-                <div
-                  style={{ display: 'flex', justifyContent: 'space-between' }}
-                >
-                  <div>
-                    <b> {item?.name} </b>
-                    <Tag color="success">{item.mealTime || 'any'}</Tag>
-                    <EditOutlined
-                      title="Edit"
-                      onClick={() => {
-                        setRecord(item);
-                        setIsAddModal(true);
-                      }}
-                    />
-
-                    <DeleteOutlined
-                      title="Delete"
-                      onClick={() => deleteFoodItem(item._id)}
-                      style={{ marginLeft: '10px' }}
-                    />
-                  </div>
-                  {item.image ? (
+        {loader ? (
+          <p>Loading...</p>
+        ) : (
+          <Collapse accordion size="small">
+            {recipes.map((item) => (
+              <Panel
+                header={
+                  <div
+                    style={{ display: 'flex', justifyContent: 'space-between' }}
+                  >
                     <div>
-                      <img
-                        style={{ width: 70, height: 70 }}
-                        src={API_URL + item.image}
-                        alt="food"
+                      <b> {item?.name} </b>
+                      <Tag color="success">{item.mealTime || 'any'}</Tag>
+                      <EditOutlined
+                        title="Edit"
+                        onClick={() => {
+                          setRecord(item);
+                          setIsAddModal(true);
+                        }}
+                      />
+
+                      <DeleteOutlined
+                        title="Delete"
+                        onClick={() => deleteFoodItem(item._id)}
+                        style={{ marginLeft: '10px' }}
                       />
                     </div>
-                  ) : null}
-                </div>
-              }
-              key={item?._id}
-            >
-              <List.Item>
-                <List.Item.Meta
-                  description={
-                    <>
-                      <Row className="m-0 p-0">
-                        <Col span={6}>
-                          <h4>Ingredients</h4>
-                        </Col>
-                        <Col span={18}>
-                          {item.ingredients.map((ingredient, index) => (
-                            <span key={index}>
-                              {ingredient}
-                              {', '}
-                            </span>
-                          ))}
-                        </Col>
-                      </Row>
+                    {item.image ? (
+                      <div>
+                        <Image
+                          style={{ width: 50, height: 50 }}
+                          src={API_URL + item.image}
+                          alt="food"
+                          loading="lazy"
+                        />
+                      </div>
+                    ) : null}
+                  </div>
+                }
+                key={item?._id}
+              >
+                <List.Item>
+                  <List.Item.Meta
+                    description={
+                      <>
+                        <Row className="m-0 p-0">
+                          <Col span={6}>
+                            <h4>Ingredients</h4>
+                          </Col>
+                          <Col span={18}>
+                            {item.ingredients.map((ingredient, index) => (
+                              <span key={index}>
+                                {ingredient}
+                                {', '}
+                              </span>
+                            ))}
+                          </Col>
+                        </Row>
 
-                      {item.instructions ? (
-                        <>
-                          <hr></hr>
-                          <Row>
-                            <Col span={6}>
-                              <h4>Instructions</h4>
-                            </Col>
-                            <Col
-                              span={18}
-                              style={{
-                                wordWrap: 'break-word',
-                                whiteSpace: 'pre-wrap',
-                              }}
-                            >
-                              {item.instructions || '-'}
-                            </Col>
-                          </Row>
-                        </>
-                      ) : null}
-                    </>
-                  }
-                />
-              </List.Item>
-            </Panel>
-          ))}
-        </Collapse>
+                        {item.instructions ? (
+                          <>
+                            <hr></hr>
+                            <Row>
+                              <Col span={6}>
+                                <h4>Instructions</h4>
+                              </Col>
+                              <Col
+                                span={18}
+                                style={{
+                                  wordWrap: 'break-word',
+                                  whiteSpace: 'pre-wrap',
+                                }}
+                              >
+                                {item.instructions || '-'}
+                              </Col>
+                            </Row>
+                          </>
+                        ) : null}
+                      </>
+                    }
+                  />
+                </List.Item>
+              </Panel>
+            ))}
+          </Collapse>
+        )}
       </Layout.Content>
 
       {isAddModal ? (
