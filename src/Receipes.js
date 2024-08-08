@@ -158,14 +158,14 @@ function Receipes() {
                         />
                       </Popconfirm>
                     </div>
-                    {item.image ? (
+                    {/* {item.image ? (
                       <Image
                         style={{ width: 50, height: 50 }}
                         src={API_URL + item.image}
                         alt="food"
                         loading="lazy"
                       />
-                    ) : null}
+                    ) : null} */}
                   </div>
                 }
                 key={item?._id}
